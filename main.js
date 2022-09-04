@@ -84,22 +84,21 @@ let imageData;
 let timePassed = 0;
 let interval = 0;
 let updated = 254;
+let updateOpposite = 255;
 let i = [];
 let pixelIndex;
 let maxArrayValue = (((height-1) * width) + width) * 4;
+let drawingActivation = false;
+let doSimStep = false;
 
-function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
+function drawCircle(ctx, x, y, radius, fill) {
     ctx.beginPath()
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
     if (fill) {
       ctx.fillStyle = fill
       ctx.fill()
     }
-    if (stroke) {
-      ctx.lineWidth = strokeWidth
-      ctx.strokeStyle = stroke
-      ctx.stroke()
-    }
+
 }
 
 function getMousePos(e)
@@ -107,7 +106,9 @@ function getMousePos(e)
     let rect = canv.getBoundingClientRect();
     return [parseInt(e.clientX - rect.left), parseInt(e.clientY - rect.top)];
 }
-
+function stepSim(){
+    doSimStep = true;
+}
 
 window.onload = init;
 function init(){
@@ -121,13 +122,21 @@ function init(){
         i = getMousePos(e);
         
     });
-    
+    canv.addEventListener('mouseup', (e) => {
+        drawingActivation = false;
+        
+    });
+    canv.addEventListener('mousedown', (e) => {
+        drawingActivation = true;
+        
+    });
     ctx.fillStyle = "#c8c800";
     ctx.fillRect(50, 0, 51, 100);
     // Start the first frame request
     window.requestAnimationFrame(gameLoop);
 }
 function gameLoop(timeStamp){
+    //Time counters
     document.getElementById("time").textContent = timeStamp;
     document.getElementById("time1").textContent = timePassed;
     document.getElementById("timei").textContent = interval;
@@ -137,18 +146,25 @@ function gameLoop(timeStamp){
     // }
     // else
     // {
-        drawCircle(ctx, i[0], i[1], 5, "#c8c800", "#c8c800", 1);
-        image = ctx.getImageData(0, 0, width, height);
-        imageData = image.data;
+        if(drawingActivation){
+            drawCircle(ctx, i[0], i[1], 1, "rgb(200,200,0,updateOpposite)");
+            image = ctx.getImageData(0, 0, width, height);
+            imageData = image.data;
+        }
+    if(doSimStep){
+        //Mouse drawing
         
-        
-    
-        draw();
+
+        //Main sim loop
+        draw(); //is fucked up the outer circle of the drawing brush makes unmoving pixels? check sim logic
+        doSimStep = false;
+    }
+        //Commit changes to the grid
         image.data = imageData;
         ctx.putImageData(image,0,0);
         interval = 0;
-    //}
     
+    //}
 
     timePassed = timeStamp;
     
@@ -157,10 +173,14 @@ function gameLoop(timeStamp){
     
 }
 function flipUpdated(){
-    if(updated == 255)
+    if(updated == 255){
         updated = 254;
-    else if(updated = 254)
+        updateOpposite = 255;
+    }        
+    else if(updated = 254){
         updated = 255;
+        updateOpposite = 254;
+    }
 }
 
 function draw(){
