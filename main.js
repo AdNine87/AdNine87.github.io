@@ -90,6 +90,7 @@ let pixelIndex;
 let maxArrayValue = (((height-1) * width) + width) * 4;
 let drawingActivation = false;
 let doSimStep = false;
+let activateSimStep = true;
 
 function drawCircle(ctx, x, y, radius, fill) {
     ctx.beginPath()
@@ -120,7 +121,7 @@ function init(){
     
     canv.addEventListener('mousemove', (e) => {
         i = getMousePos(e);
-        
+        document.getElementById("tooltip").innerHTML = `R: ${image.data[cordsToIndex(i)]} G:${image.data[cordsToIndex(i)+1]} B: ${image.data[cordsToIndex(i)+2]} A:${image.data[cordsToIndex(i)+3]}`
     });
     canv.addEventListener('mouseup', (e) => {
         drawingActivation = false;
@@ -151,7 +152,7 @@ function gameLoop(timeStamp){
             image = ctx.getImageData(0, 0, width, height);
             imageData = image.data;
         }
-    if(doSimStep){
+    if(doSimStep || !activateSimStep){
         //Mouse drawing
         
 
