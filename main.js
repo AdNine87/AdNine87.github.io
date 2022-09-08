@@ -78,8 +78,8 @@ imageData.data[pixelindex+3] = 255;
 "use strict";
 let canv;
 let ctx;
-let height = 250;
-let width = 250;
+let height = 800;
+let width = 800;
 let imageData;
 let timePassed = 0;
 let interval = 0;
@@ -90,7 +90,7 @@ let pixelIndex;
 let maxArrayValue = (((height-1) * width) + width) * 4;
 let drawingActivation = false;
 let doSimStep = false;
-let activateSimStep = true;
+let activateSimStep = false;
 
 function drawCircle(ctx, x, y, radius, fill) {
     ctx.beginPath()
@@ -131,6 +131,18 @@ function init(){
         drawingActivation = true;
         
     });
+    canv.addEventListener('touchmove', (e) => {
+        i = getMousePos(e);
+        document.getElementById("tooltip").innerHTML = `R: ${image.data[cordsToIndex(i)]} G:${image.data[cordsToIndex(i)+1]} B: ${image.data[cordsToIndex(i)+2]} A:${image.data[cordsToIndex(i)+3]}`
+    });
+    canv.addEventListener('touchup', (e) => {
+        drawingActivation = false;
+        
+    });
+    canv.addEventListener('touchdown', (e) => {
+        drawingActivation = true;
+        
+    });
     ctx.fillStyle = "#c8c800";
     ctx.fillRect(50, 0, 51, 100);
     // Start the first frame request
@@ -138,6 +150,7 @@ function init(){
 }
 function gameLoop(timeStamp){
     //Time counters
+    
     document.getElementById("time").textContent = timeStamp;
     document.getElementById("time1").textContent = timePassed;
     document.getElementById("timei").textContent = interval;
@@ -147,20 +160,19 @@ function gameLoop(timeStamp){
     // }
     // else
     // {
-        if(drawingActivation){
-            drawCircle(ctx, i[0], i[1], 1, "rgb(200,200,0,updateOpposite)");
-            image = ctx.getImageData(0, 0, width, height);
-            imageData = image.data;
-        }
+    if(drawingActivation){
+        drawCircle(ctx, i[0], i[1], 15, "rgb(200,200,0,updateOpposite)");
+        image = ctx.getImageData(0, 0, width, height);
+        imageData = image.data;
+    }
     if(doSimStep || !activateSimStep){
         //Mouse drawing
-        
-
         //Main sim loop
         draw(); //is fucked up the outer circle of the drawing brush makes unmoving pixels? check sim logic
         doSimStep = false;
     }
         //Commit changes to the grid
+
         image.data = imageData;
         ctx.putImageData(image,0,0);
         interval = 0;
