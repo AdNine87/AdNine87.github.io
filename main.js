@@ -154,18 +154,18 @@ function init(){
 
         i = getMousePos(e);
     });
-    canv.addEventListener('touchup', (e) => {
-        console.log("touchup");
+    canv.addEventListener('touchend', (e) => {
+        console.log("touchend");
         drawingActivation = false;
-        updateMouseStatus("touchup");
+        updateMouseStatus("touchend");
 
         
     });
-    canv.addEventListener('touchdown', (e) => {
+    canv.addEventListener('touchstart', (e) => {
         drawingActivation = true;
-        console.log("touchdown");
+        console.log("touchstart");
         updateTooltip();
-        updateMouseStatus("touchdown");
+        updateMouseStatus("touchstart");
 
     });
     ctx.fillStyle = "#c8c800";
