@@ -101,6 +101,13 @@ function drawCircle(ctx, x, y, radius, fill) {
     }
 
 }
+function updateTooltip(){
+    document.getElementById("tooltip").innerHTML = 
+    `R: ${image.data[cordsToIndex(i)]} G:${image.data[cordsToIndex(i)+1]} B: ${image.data[cordsToIndex(i)+2]} A:${image.data[cordsToIndex(i)+3]}`
+}
+function updateMouseStatus(status){
+    document.getElementById("mousestatus").innerHTML = status;
+}
 
 function getMousePos(e)
 {
@@ -120,28 +127,46 @@ function init(){
     imageData = image.data;
     
     canv.addEventListener('mousemove', (e) => {
+        console.log("mousemove");
+        updateTooltip();
         i = getMousePos(e);
-        document.getElementById("tooltip").innerHTML = `R: ${image.data[cordsToIndex(i)]} G:${image.data[cordsToIndex(i)+1]} B: ${image.data[cordsToIndex(i)+2]} A:${image.data[cordsToIndex(i)+3]}`
+        updateMouseStatus("mousemove");
     });
     canv.addEventListener('mouseup', (e) => {
         drawingActivation = false;
+        console.log("mouseup");
+        updateMouseStatus("mouseup");
         
     });
     canv.addEventListener('mousedown', (e) => {
         drawingActivation = true;
+        console.log("mousedown");
+        updateTooltip();
+        updateMouseStatus("mousedown");
         
     });
     canv.addEventListener('touchmove', (e) => {
+        drawingActivation = true;
+        console.log("touchmove");
+        updateMouseStatus("touchmove");
+
+        updateTooltip();
+
         i = getMousePos(e);
-        document.getElementById("tooltip").innerHTML = `R: ${image.data[cordsToIndex(i)]} G:${image.data[cordsToIndex(i)+1]} B: ${image.data[cordsToIndex(i)+2]} A:${image.data[cordsToIndex(i)+3]}`
     });
     canv.addEventListener('touchup', (e) => {
+        console.log("touchup");
         drawingActivation = false;
+        updateMouseStatus("touchup");
+
         
     });
     canv.addEventListener('touchdown', (e) => {
         drawingActivation = true;
-        
+        console.log("touchdown");
+        updateTooltip();
+        updateMouseStatus("touchdown");
+
     });
     ctx.fillStyle = "#c8c800";
     ctx.fillRect(50, 0, 51, 100);
@@ -151,9 +176,9 @@ function init(){
 function gameLoop(timeStamp){
     //Time counters
     
-    document.getElementById("time").textContent = timeStamp;
-    document.getElementById("time1").textContent = timePassed;
-    document.getElementById("timei").textContent = interval;
+    // document.getElementById("time").textContent = timeStamp;
+    // document.getElementById("time1").textContent = timePassed;
+    // document.getElementById("timei").textContent = interval;
     // if(interval < 1){
     //     interval += timeStamp - timePassed;
         
